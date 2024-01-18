@@ -1,0 +1,5 @@
+fastapi[all]==0.78.0
+python-multipart==0.0.5
+minio==7.1.0
+gunicorn==20.1.0
+boto3
