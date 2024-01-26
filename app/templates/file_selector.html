@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Files in Bucket</title>
+</head>
+<body>
+    <h1>Select a File to View</h1>
+    <table>
+        <tr>
+            <th>Filename</th>
+            <th>View</th>
+        </tr>
+        {% for file_name in files %}
+        <tr>
+            <td>{{ file_name }}</td>
+            <td><a href="{{ url_for('display_image', file_name=file_name) }}">View</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Upload a File</h2>
+    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+    </form>
+</body>
+</html>
