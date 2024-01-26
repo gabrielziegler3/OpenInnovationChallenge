@@ -29,18 +29,52 @@ def resize_image_slices(image_2d: pd.DataFrame, target_width: int = 150) -> np.n
     return resized_image
 
 
-def convert_to_numpy(image_bytes: io.BytesIO) -> np.ndarray:
-    """
-    Convert the image to a numpy array.
+def resize_image_keep_depth(image: pd.DataFrame, new_width: int = 150) -> pd.DataFrame:
+    if isinstance(image, io.BytesIO):
+        image = pd.read_csv(image)
 
-    :param image_2d: The 2D image to convert.
-    :return: The converted image.
-    """
-    # convert to pandas
-    image_2d = pd.read_csv(image_bytes)
+    # Separate the 'depth' column
+    depth_data = image['depth']
+    pixel_data = image.drop('depth', axis=1)
 
-    # remove the depth column and NaN row
-    image = image_2d.iloc[:-1, 1:]
+    print(f'Original image shape: {pixel_data.shape}')
+    resized_img = resize_image_slices(pixel_data, new_width)
+    print(f'Resized image shape: {resized_img.shape}')
+
+    # Convert the resized array back to DataFrame
+    resized_pixels_df = pd.DataFrame(resized_img, columns=[f'col{i}' for i in range(resized_img.shape[1])])
+
+    # Concatenate the 'depth' column back with the resized pixel data
+    # Ensure the depth_data has the same number of rows as the resized_pixels_df after resizing
+    resized_pixels_df.insert(0, 'depth', depth_data.values[:resized_pixels_df.shape[0]])
+
+    return resized_pixels_df
+
+
+def get_slice(df: pd.DataFrame, start: float, end: float) -> pd.DataFrame:
+    """
+    Get a slice of the image.
+
+    :param df: The image to slice.
+    :param start: The start depth.
+    :param end: The end depth.
+    :return: The sliced image.
+    """
+    mask = (df['depth'] >= start) & (df['depth'] <= end)
+    return df[mask]
+
+
+def convert_to_array(df: pd.DataFrame) -> np.ndarray:
+    """
+    Convert the image dataframe to a numpy array.
+
+    :param df: The image dataframe to convert.
+    """
+    if not isinstance(df, pd.DataFrame):
+        image = pd.read_csv(df)
+
+    # remove the depth column
+    image = df.iloc[:, 1:]
 
     return image.to_numpy()
 

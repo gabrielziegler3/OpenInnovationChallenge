@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Image</title>
+</head>
+<body>
+    <h1>View Image</h1>
+    <form action="{{ url_for('display_image', file_name=file_name) }}" method="get">
+        <label for="min_depth">Minimum Depth:</label>
+        <input type="number" id="min_depth" name="min_depth" step="any">
+
+        <label for="max_depth">Maximum Depth:</label>
+        <input type="number" id="max_depth" name="max_depth" step="any">
+
+        <input type="submit" value="View Image">
+    </form>
+
+    {% if img_data %}
+    <h2>Image Preview</h2>
+    <img src="data:image/png;base64,{{ img_data }}" alt="Image Preview">
+    {% endif %}
+</body>
+</html>
