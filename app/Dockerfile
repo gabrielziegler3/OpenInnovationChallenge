@@ -14,4 +14,7 @@ RUN pip install -r /tmp/requirements.txt
 
 RUN pip freeze
 
+# OpenCV
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+
 # CMD ["uvicorn", "server:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "80"]
